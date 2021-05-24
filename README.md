@@ -72,7 +72,7 @@ my credentials from my root folder instead.
 ## Usage
 + There are two modes of operation. local (local_test) or cloud(aws)
     + **local_test** will use ```data/*``` files to make an ETL locally and store the
-        tables in ```parquet_area/*```
+        tables in ```output_parquet_files/*```
     + To run type in terminal```python ./etl.py --mode local_test```
     + **aws** will use s3 urls to read udacity bucket and then will write the result
     into a the s3 bucket specified in the main function of ```etl.py```.
