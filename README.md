@@ -1,5 +1,4 @@
-# Data_Lake_with_Amazon_EMR_and_S3
-# Data Lake using Amazon S3 and EMR
+# Data Lake with Amazon S3 and EMR
 
 ## Introduction
 A startup called Sparkify wants to analyze the data they've been collecting on songs and user activity on their new music streaming app. Their user base and song database have grown large and want to move their data warehouse to a data lake.
@@ -60,9 +59,23 @@ Sample Data
 **time** - timestamps of records in songplays broken down into specific units (start_time, hour, day, week, month, year, weekday). time table files are partitioned by year and month and stored in time folder
 
  
-## Project Structure Explanation
+## Files
++ ```etl.py```: main pyspark script to do the ETL.
+Please see the readme inside for more information.
++ ```data/*```: data used for local testing.
++ ```dakelake.ipynb``` : Development notebook. Use for step by step explorarion.
++ ```dl.cfg```: file that can hold AWS credentials. Notice that I prefered to call
+my credentials from my root folder instead.
++ ```experiments_spark.ipynb``` pyspark dataframe explorarion.
++ ```output_parquet_files/*```: stored parquet files after local testing execution.
 
- - **etl.py** reads and processes all files from song_data and log_data, processes them using Spark, and loads the data back into S3 in parquet files
- - **dl.cfg** configuration file for AWS
-    
+## Usage
++ There are two modes of operation. local (local_test) or cloud(aws)
+    + **local_test** will use ```data/*``` files to make an ETL locally and store the
+        tables in ```parquet_area/*```
+    + To run type in terminal```python ./etl.py --mode local_test```
+    + **aws** will use s3 urls to read udacity bucket and then will write the result
+    into a the s3 bucket specified in the main function of ```etl.py```.
+    + To run, SSH to EMR instance, copy ```etl.py``` and  ```dl.cfg```
+     execute the script ```/usr/bin/spark-submit --master yarn ./etl.py .
     
