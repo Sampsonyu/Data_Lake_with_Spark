@@ -13,6 +13,9 @@ config.read('dl.cfg')
 os.environ['AWS_ACCESS_KEY_ID'] = config['AWS']['AWS_ACCESS_KEY_ID']
 os.environ['AWS_SECRET_ACCESS_KEY'] = config['AWS']['AWS_SECRET_ACCESS_KEY']
 
+# input_data = "s3a://udacity-dend/"
+# output_data = "s3://sparkifydatasource/sparkify_test/"
+
 
 def create_spark_session():
     spark = SparkSession \
@@ -34,7 +37,7 @@ def process_song_data(spark, input_data, output_data):
 
     # write songs table to parquet files partitioned by year and artist
     song_out_path = os.path.join(output_data, 'sparkify_songs_table/')
-    songs_table.write.parquet(song_out_path, mode='overwrite', partitionBy=('year','id'))
+    songs_table.write.parquet(song_out_path, mode='overwrite', partitionBy=('year','artist_id'))
 
     # extract columns to create artists table
     artists_table = df.select('artist_id', \
