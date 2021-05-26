@@ -77,5 +77,5 @@ my credentials from my root folder instead.
     + **aws** will use s3 urls to read udacity bucket and then will write the result
     into a the s3 bucket specified in the main function of ```etl.py```.
     + To run, SSH to EMR instance, copy ```etl.py``` and  ```dl.cfg```
-     execute the script ```/usr/bin/spark-submit --master yarn ./etl.py .
+     execute the script ```/usr/bin/spark-submit --master yarn ./etl.py ```
     
