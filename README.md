@@ -1,4 +1,4 @@
-# Data Lake with Amazon S3 and EMR
+# Data Lake with Amazon EMR and S3
 
 ## Introduction
 A startup called Sparkify wants to analyze the data they've been collecting on songs and user activity on their new music streaming app. Their user base and song database have grown large and want to move their data warehouse to a data lake.
@@ -77,5 +77,5 @@ my credentials from my root folder instead.
     + **aws** will use s3 urls to read udacity bucket and then will write the result
     into a the s3 bucket specified in the main function of ```etl.py```.
     + To run, SSH to EMR instance, copy ```etl.py``` and  ```dl.cfg```
-     execute the script ```/usr/bin/spark-submit --master yarn ./etl.py .
+     execute the script ```/usr/bin/spark-submit --master yarn ./etl.py ```
     
