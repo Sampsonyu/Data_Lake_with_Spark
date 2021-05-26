@@ -32,6 +32,17 @@ def create_spark_session():
 
 
 def process_song_data(spark, input_data, output_data, song_schema):
+    '''
+        Description: This function processes the songs data files.
+        1. Read and load song_data from S3
+        2. Transform them to create songs table and artists table
+        3. Write them to partioned parquet files in table directories on S3
+         
+        :param spark: spark session
+        :param input_data: input file path
+        :param output_data: output file path
+        :param song_schema
+    '''
     # get filepath to song data file
     song_data = os.path.join(input_data, 'song_data/*/*/*/*.json')
 
@@ -58,7 +69,17 @@ def process_song_data(spark, input_data, output_data, song_schema):
     artists_table.write.parquet(artist_out_path, mode='overwrite')
 
 
-def process_log_data(spark, input_data, output_data, log_schema):
+def process_log_data(spark, input_data, output_data, log_schema, song_schema):
+     '''
+        Description: Process the log data files, transform them to users table, time tables, song_plays tables and
+        write them to partioned parquet files in table directories on S3
+         
+        :param spark: spark session
+        :param input_data: input file path
+        :param output_data: output file path
+        :param log_schema
+        :param song_schema
+    '''
     # get filepath to log data file
 
     log_data = os.path.join(input_data, 'log_data/*/*/*.json')
@@ -78,7 +99,7 @@ def process_log_data(spark, input_data, output_data, log_schema):
                             'level') \
                     .where(col("user_id").isNotNull()) \
                     .dropDuplicates()
-
+    # We could use a subset while dropping the duplicates. users_table = users_table.drop_duplicates(subset=['userId'])
     # write users table to parquet files
     user_out_path = os.path.join(output_data, 'sparkify_user_table/')
     users_table.write.parquet(user_out_path, mode="overwrite")
