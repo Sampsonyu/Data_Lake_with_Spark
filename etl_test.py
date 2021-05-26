@@ -70,7 +70,7 @@ def process_song_data(spark, input_data, output_data, song_schema):
 
 
 def process_log_data(spark, input_data, output_data, log_schema, song_schema):
-    '''
+     '''
         Description: Process the log data files, transform them to users table, time tables, song_plays tables and
         write them to partioned parquet files in table directories on S3
          
@@ -192,7 +192,7 @@ def main():
     # process song data
     process_song_data(spark, input_data, output_data, song_schema)
     # process song data
-    process_log_data(spark, input_data, output_data, log_schema, song_schema)
+    process_log_data(spark, input_data, output_data, log_schema)
 
 
 if __name__ == "__main__":
