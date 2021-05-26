@@ -3,7 +3,7 @@ from datetime import datetime
 import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col
-from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, date_format
+from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, dayofweek, date_format
 import pyspark.sql.types as T           # Used to define Schema struct
 
 
@@ -12,6 +12,12 @@ config.read('dl.cfg')
 
 os.environ['AWS_ACCESS_KEY_ID'] = config['AWS']['AWS_ACCESS_KEY_ID']
 os.environ['AWS_SECRET_ACCESS_KEY'] = config['AWS']['AWS_SECRET_ACCESS_KEY']
+
+# specify input data folder
+input_data = 's3a://udacity-dend/'
+
+# specify output data folder
+output_data = 's3://sparkifydatasource/spark_output/'
 
 # input_data = "s3a://udacity-dend/"
 # output_data = "s3://sparkifydatasource/sparkify_test/"
@@ -25,7 +31,7 @@ def create_spark_session():
     return spark
 
 
-def process_song_data(spark, input_data, output_data):
+def process_song_data(spark, input_data, output_data, song_schema):
     # get filepath to song data file
     song_data = os.path.join(input_data, 'song_data/*/*/*/*.json')
 
@@ -52,7 +58,7 @@ def process_song_data(spark, input_data, output_data):
     artists_table.write.parquet(artist_out_path, mode='overwrite')
 
 
-def process_log_data(spark, input_data, output_data):
+def process_log_data(spark, input_data, output_data, log_schema):
     # get filepath to log data file
 
     log_data = os.path.join(input_data, 'log_data/*/*/*.json')
@@ -105,7 +111,7 @@ def process_log_data(spark, input_data, output_data):
     song_df = spark.read.json(song_data, schema=song_schema)
     # extract columns from joined song and log datasets to create songplays table
     df_song_log = df.join(song_df, [df.song == song_df.title,\
-                                        df.artist == song_df.name])
+                                        df.artist == song_df.artist_name])
     songplays_table = df_song_log.select(col('timestamp').alias('start_time'),\
                                         col('userId').alias('user_id'),\
                                         'level',\
@@ -161,16 +167,11 @@ def main():
                               , T.StructField('userAgent'       , T.StringType())
                               , T.StructField('userId'          , T.StringType())
                               ])
-    # specify input data folder
-    input_data = config['S3']['SPARKIFY_DATALAKE_INPUT_DATA_PATH']
-
-    # specify output data folder
-    output_data = config['S3']['SPARKIFY_DATALAKE_OUTPUT_DATA_PATH']
 
     # process song data
-    process_song_data(spark, input_data, output_data)
+    process_song_data(spark, input_data, output_data, song_schema)
     # process song data
-    process_log_data(spark, input_data, output_data)
+    process_log_data(spark, input_data, output_data, log_schema)
 
 
 if __name__ == "__main__":
