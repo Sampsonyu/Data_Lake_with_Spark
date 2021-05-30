@@ -1,4 +1,4 @@
-# Data Lake with Amazon EMR and S3
+# Data Lake with Spark
 
 ## Introduction
 A startup called Sparkify wants to analyze the data they've been collecting on songs and user activity on their new music streaming app. Their user base and song database have grown large and want to move their data warehouse to a data lake.
