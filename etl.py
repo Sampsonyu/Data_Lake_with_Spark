@@ -3,6 +3,7 @@ from datetime import datetime
 import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col
+from pyspark.sql.functions import monotonically_increasing_id
 from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, dayofweek, date_format
 import pyspark.sql.types as T           # Used to define Schema struct
 
@@ -133,16 +134,22 @@ def process_log_data(spark, input_data, output_data, log_schema, song_schema):
     # extract columns from joined song and log datasets to create songplays table
     df_song_log = df.join(song_df, [df.song == song_df.title,\
                                         df.artist == song_df.artist_name])
-    songplays_table = df_song_log.select(col('timestamp').alias('start_time'),\
-                                        col('userId').alias('user_id'),\
-                                        'level',\
-                                        'song_id',\
-                                        'artist_id',\
-                                        col('sessionId').alias('session_id'),\
-                                        'location',\
-                                        col('userAgent').alias('user_agent'), \
-                                        year(df.timestamp).alias('year'), \
-                                        month(df.timestamp).alias('month'))
+    
+    df_song_log =df_song_log.withColumn("songplay_id", monotonically_increasing_id())
+   
+    songplays_table = df_song_log.select(
+        "songplay_id",\
+        col('timestamp').alias('start_time'),\
+        col('userId').alias('user_id'),\
+        'level',\
+        'song_id',\
+        'artist_id',\
+        col('sessionId').alias('session_id'),\
+        'location',\
+        col('userAgent').alias('user_agent'), \
+        year(df.timestamp).alias('year'), \
+        month(df.timestamp).alias('month'))
+    
     # write songplays table to parquet files partitioned by year and month
     songplays_out_path = os.path.join(output_data, 'sparkify_songplays_table/')
     songplays_table.write.parquet(songplays_out_path, mode='overwrite', partitionBy=('year', 'month'))
